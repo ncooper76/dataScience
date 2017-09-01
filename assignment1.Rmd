@@ -1,0 +1,126 @@
+---
+title: "Assignment1"
+author: "Alvaro Bueno"
+date: "8/31/2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+load the dataset and renaming the columns according to the info provided.
+```{r}
+mushrooms<-read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/agaricus-lepiota.data.txt", header= FALSE, sep=",")
+
+colnames(mushrooms) <- c("e/p", "cap-shape","cap-surface", "cap-color", "bruises", "odor", "gill-attach", "gill-spacing", "gill-size", "gill-color", "stalk-shape", "stalk-root", "stalk-surface-above-ring", "stalk-surface-below-ring", "stalk-color-above-ring", "stalk-color-below-ring", "veil-type", "veil-color", "ring-number", "ring-type", "spore-print-color", "population", "habitat")
+
+```
+
+create a subset with the interseting columns and Transforming the data to allow legibility.
+```{r}
+mush <- subset(mushrooms, TRUE, select <- c('e/p', 'odor', 'cap-surface','cap-color', 'stalk-surface-below-ring', 'stalk-color-above-ring', 'spore-print-color','habitat', 'population', 'ring-type'))
+
+mush$'e/p' <- gsub('^e$', 'edible', mush$'e/p')
+mush$'e/p' <- gsub('^p$', 'poisonous', mush$'e/p')
+
+mush$odor <- gsub('^a$', 'almond', mush$odor)
+mush$odor <- gsub('^l$', 'anise', mush$odor)
+mush$odor <- gsub('^c$', 'creosote', mush$odor)
+mush$odor <- gsub('^y$', 'fishy', mush$odor)
+mush$odor <- gsub('^f$', 'foul', mush$odor)
+mush$odor <- gsub('^m$', 'musty', mush$odor)
+mush$odor <- gsub('^n$', 'none', mush$odor)
+mush$odor <- gsub('^p$', 'pungent', mush$odor)
+mush$odor <- gsub('^s$', 'spicy', mush$odor)
+
+mush$'cap-surface' <- gsub('^f$', 'fibrous', mush$'cap-surface')
+mush$'cap-surface' <- gsub('^g$', 'grooves', mush$'cap-surface')
+mush$'cap-surface' <- gsub('^y$', 'scaly', mush$'cap-surface')
+mush$'cap-surface' <- gsub('^s$', 'smooth', mush$'cap-surface')
+
+mush$'spore-print-color' <- gsub('^k$', 'black', mush$'spore-print-color')
+mush$'spore-print-color' <- gsub('^n$', 'brown', mush$'spore-print-color')
+mush$'spore-print-color' <- gsub('^b$', 'buff', mush$'spore-print-color')
+mush$'spore-print-color' <- gsub('^h$', 'chocolate', mush$'spore-print-color')
+mush$'spore-print-color' <- gsub('^r$', 'green', mush$'spore-print-color')
+mush$'spore-print-color' <- gsub('^o$', 'orange', mush$'spore-print-color')
+mush$'spore-print-color' <- gsub('^u$', 'purple', mush$'spore-print-color')
+mush$'spore-print-color' <- gsub('^w$', 'white', mush$'spore-print-color')
+mush$'spore-print-color' <- gsub('^y$', 'yellow', mush$'spore-print-color')
+
+mush$habitat <- gsub('^g$', 'grasses', mush$habitat)
+mush$habitat <- gsub('^l$', 'leaves', mush$habitat)
+mush$habitat <- gsub('^m$', 'meadows', mush$habitat)
+mush$habitat <- gsub('^p$', 'paths', mush$habitat)
+mush$habitat <- gsub('^u$', 'urban', mush$habitat)
+mush$habitat <- gsub('^w$', 'waste', mush$habitat)
+mush$habitat <- gsub('^d$', 'woods', mush$habitat)
+
+mush$population <- gsub('^a$', 'abundant', mush$population)
+mush$population <- gsub('^c$', 'clustered', mush$population)
+mush$population <- gsub('^n$', 'numerous', mush$population)
+mush$population <- gsub('^s$', 'scattered', mush$population)
+mush$population <- gsub('^v$', 'several', mush$population)
+mush$population <- gsub('^y$', 'solitary', mush$population)
+
+mush$'ring-type' <- gsub('^c$', 'obwebby', mush$'ring-type')
+mush$'ring-type' <- gsub('^e$', 'evanescent', mush$'ring-type')
+mush$'ring-type' <- gsub('^f$', 'evanescent', mush$'ring-type')
+mush$'ring-type' <- gsub('^l$', 'large', mush$'ring-type')
+mush$'ring-type' <- gsub('^n$', 'none', mush$'ring-type')
+mush$'ring-type' <- gsub('^p$', 'pendant', mush$'ring-type')
+mush$'ring-type' <- gsub('^s$', 'sheathing', mush$'ring-type')
+mush$'ring-type' <- gsub('^z$', 'zone', mush$'ring-type')
+
+mush$'cap-color' <- gsub('^n$', 'brown', mush$'cap-color')
+mush$'cap-color' <- gsub('^b$', 'buff', mush$'cap-color')
+mush$'cap-color' <- gsub('^c$', 'cinnamon', mush$'cap-color')
+mush$'cap-color' <- gsub('^g$', 'gray', mush$'cap-color')
+mush$'cap-color' <- gsub('^r$', 'green', mush$'cap-color')
+mush$'cap-color' <- gsub('^p$', 'pink', mush$'cap-color')
+mush$'cap-color' <- gsub('^u$', 'purple', mush$'cap-color')
+mush$'cap-color' <- gsub('^e$', 'red', mush$'cap-color')
+mush$'cap-color' <- gsub('^w$', 'white', mush$'cap-color')
+mush$'cap-color' <- gsub('^y$', 'yellow', mush$'cap-color')
+
+mush$'stalk-surface-below-ring' <- gsub('^f$', 'fibrous', mush$'stalk-surface-below-ring')
+mush$'stalk-surface-below-ring' <- gsub('^y$', 'scaly', mush$'stalk-surface-below-ring')
+mush$'stalk-surface-below-ring' <- gsub('^k$', 'silky', mush$'stalk-surface-below-ring')
+mush$'stalk-surface-below-ring' <- gsub('^s$', 'smooth', mush$'stalk-surface-below-ring')
+
+
+mush$'stalk-color-above-ring' <- gsub('^n$', 'brown', mush$'stalk-color-above-ring')
+mush$'stalk-color-above-ring' <- gsub('^b$', 'buff', mush$'stalk-color-above-ring')
+mush$'stalk-color-above-ring' <- gsub('^c$', 'cinnamon', mush$'stalk-color-above-ring')
+mush$'stalk-color-above-ring' <- gsub('^g$', 'gray', mush$'stalk-color-above-ring')
+mush$'stalk-color-above-ring' <- gsub('^o$', 'orange', mush$'stalk-color-above-ring')
+mush$'stalk-color-above-ring' <- gsub('^p$', 'pink', mush$'stalk-color-above-ring')
+mush$'stalk-color-above-ring' <- gsub('^e$', 'red', mush$'stalk-color-above-ring')
+mush$'stalk-color-above-ring' <- gsub('^w$', 'white', mush$'stalk-color-above-ring')
+mush$'stalk-color-above-ring' <- gsub('^y$', 'yellow', mush$'stalk-color-above-ring')
+
+head(mush)
+```
+
+Rules
+
+  P_1) odor=NOT(almond.OR.anise.OR.none)
+	     120 poisonous cases missed, 98.52% accuracy
+
+	P_2) spore-print-color=green
+	     48 cases missed, 99.41% accuracy
+         
+	P_3) odor=none.AND.stalk-surface-below-ring=scaly.AND.
+	          (stalk-color-above-ring=NOT.brown) 
+	     8 cases missed, 99.90% accuracy
+         
+	P_4) habitat=leaves.AND.cap-color=white
+	         100% accuracy     
+
+	Rule P_4) may also be
+
+	P_4') population=clustered.AND.cap_color=white
+	
