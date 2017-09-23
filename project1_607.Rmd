@@ -1,0 +1,89 @@
+---
+title: "Project1_607"
+author: "Alvaro Bueno"
+date: "9/22/2017"
+output: pdf_document
+---
+## build the data frames  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+results <- data.frame(id=integer(),name=character(),state=character(),points=double(),prescore=integer(), calcscore=double())
+names(results) <- c('id','name','state', 'points', 'prescore', 'calcscore')
+opponents = data.frame(id=integer(),opponents=character())
+
+```
+
+## extract the data from the file
+```{r load-data, eval=TRUE}
+library('stringr')
+tmp <- url('https://github.com/delagroove/dataScience/raw/master/tournamentinfo.txt')
+open(tmp, 'r')
+count = 0
+header <-readLines(tmp, n=4)
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+
+while (length(data <- readLines(tmp, n=3)) > 0){
+    count = count + 1
+    #extract id
+    id <- unlist(str_extract_all(data[1], "(?<= {3,4})[0-9]{1,2}(?= {1}| [a-zA-Z ]{6,})", FALSE))
+
+    name <- unlist(str_extract_all(data[1], "(?<=[0-9]{1,2} {1}| )[a-zA-Z ]{6,}", FALSE))
+    name <- trim(name)
+    
+    #extract states
+    state <- unlist(str_extract_all(data[2], "[a-zA-Z]{2}(?= | [0-9]{8})", FALSE))
+    
+    #extract points
+    points <- unlist(str_extract_all(data[1], "(?<=[0-9]{1,2} {1}| [a-zA-Z ]{6,32}|)[0-9].[0-9]", FALSE))
+    
+    #extract pre-score
+    pres <- unlist(str_extract_all(data[2], "(?<=/ R: {1,2})[0-9]{3,4}(?= |P)", FALSE))
+    df <- data.frame(id,name,state,points,pres, 0)
+    names(df) <- c('id', 'name','state', 'points', 'prescore', 'calcscore')
+    results <- rbind(results, df)
+    
+    #extract opponents
+    opp <- unlist(str_extract_all(data[1], "(?<=[0-9]{1,2} {1}| [a-zA-Z ]{6,32}|[0-9].[0-9]  |(W|D|L) {2,3})[0-9]{1,}", FALSE))
+
+    df2 <- data.frame(id, opp)
+    names(df2) <- c('id','opponents')
+    opponents <- rbind(opponents, df2)
+    
+}
+```
+## Fill out the calculated store
+```{r}
+for (id in 1:max(as.numeric(opponents$id))){
+  sum <- 0
+  for(opponent in opponents[opponents$id==id,'opponents']){
+    pr <- results[results$id==opponent,'prescore']
+    num_pr <- as.numeric(levels(pr))[pr]
+    sum = sum + num_pr
+  }
+  
+  calcscore = sum/length(opponents[opponents$id==id,'opponents'])
+  results[results$id==id,'calcscore'] <- calcscore
+}
+
+close(tmp)
+
+```
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
