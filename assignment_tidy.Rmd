@@ -1,0 +1,39 @@
+---
+title: "Assignment_tidy"
+author: "Alvaro Bueno"
+date: "9/30/2017"
+output: html_document
+---
+## Assignmment, tidying up table
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+install.packages('tidyr')
+install.packages('dplyr')
+library('tidyr')
+library('dplyr')
+```
+
+```{r read}
+#open
+dat = read.csv("flightsinfo.csv", header = TRUE,na.strings=c("","NA"))
+
+## gather the table by city
+res <- gather(dat, "los.angeles", "phoenix", "san.diego", "san.francisco", "seattle", key="city", value="count")
+
+## remove Na values on count
+res <- drop_na(res,count)
+
+#rename columns
+colnames(res)[1] <- "airline"
+colnames(res)[2] <- "status"
+
+#fill the empty values for airline with the value from above.
+res <- fill(res, "airline")
+
+
+```
+
+## Now with data complete we can do our calculations
+
+```{r calc}
+```
