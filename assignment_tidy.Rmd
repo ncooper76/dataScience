@@ -4,18 +4,18 @@ author: "Alvaro Bueno"
 date: "9/30/2017"
 output: html_document
 ---
-## Assignmment, tidying up table
+## Assignment, tidying up table
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-install.packages('tidyr')
-install.packages('dplyr')
+#import libraries
 library('tidyr')
 library('dplyr')
 ```
 
+## opening file and performin initial tidy functions
+
 ```{r read}
 #open
-dat = read.csv("flightsinfo.csv", header = TRUE,na.strings=c("","NA"))
+dat = read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/flightsinfo.csv", header = TRUE,na.strings=c("","NA"))
 
 ## gather the table by city
 res <- gather(dat, "los.angeles", "phoenix", "san.diego", "san.francisco", "seattle", key="city", value="count")
@@ -30,10 +30,33 @@ colnames(res)[2] <- "status"
 #fill the empty values for airline with the value from above.
 res <- fill(res, "airline")
 
-
 ```
 
-## Now with data complete we can do our calculations
+## Now with data complete, we can do our calculations
 
 ```{r calc}
+## get the total count of flights to a city
+sums <- group_by(res, city, airline) %>% summarise(sum(count))
+
+#duplicate a row in between to use the sum for the calculation
+sums <- sums[rep(seq_len(nrow(sums)), each=2),]
+
+#initialize  new column to store ratio
+res$ratio = 0
+
+## save the ratio of flights on time/delayed vs total flights to that city.
+ for(the_city in levels(as.factor(res$city))){
+   for(the_airline in levels(res$airline)){
+     res[which(res$city==the_city,res$airline==the_airline),]$ratio <- res[which(res$city==the_city,res$airline==the_airline),]$count/sums[which(sums$city==the_city,sums$airline==the_airline),]$`sum(count)`
+   }
+ }
+
+(res)
 ```
+
+## conclusion
+
+We can assess here  that Alaska  has more percentage of flights on time than AM WEST, with pronounced differences in the flights to san francisco and seattle. The difference is not significant at all in Phoenix, where AM West operation is quite big.
+
+A recommendation for AM West would be to upgrade operations in San Francisco and  Seattle specially where their operations are constantly delayed.
+
