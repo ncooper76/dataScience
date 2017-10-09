@@ -15,7 +15,7 @@ library('dplyr')
 
 ```{r read}
 #open
-dat = read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/flightsinfo.csv", header = TRUE,na.strings=c("","NA"))
+dat = read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/flightsinfo.csv", header = ,na.strings=c("","NA"))
 
 ## gather the table by city
 res <- gather(dat, "los.angeles", "phoenix", "san.diego", "san.francisco", "seattle", key="city", value="count")

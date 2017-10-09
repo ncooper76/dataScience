@@ -1,0 +1,180 @@
+---
+title: "Project2"
+author: "Alvaro Bueno"
+date: "10/8/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Project 2
+
+## 1st data set - energy usage
+
+```{r setup, include=FALSE}
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+#install.packages("devtools")
+library(devtools)
+install_github('arilamstein/choroplethrZip@v1.3.0')
+library(choroplethrZip)
+install_github("choroplethrMaps", "trulia")
+library(choroplethrMaps)
+library(knitr)
+asNumeric <- function(x) as.numeric(as.character(gsub(",","",x)))
+factorsNumeric <- function(d) modifyList(d, lapply(d[, sapply(d, is.factor)], asNumeric))
+
+## h1bdata <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/h-1b-2016-employers.csv", header=TRUE, sep=",", )
+energydata <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/eia-energy-use.csv", header=FALSE, sep=",",dec=".", na.strings=c("(s)","NA"))
+colnames(energydata) <- c('state', 'energy total', 'coal', 'gas', 'petrol', 'fossil total', 'nuclear', 'renewable', 'net flow', 'net imports', 'residential use', 'commercial use', 'industrial use', 'transport use');
+
+## remove first 15 lines
+energydata <- dplyr::slice(energydata, 16:nrow(energydata))
+```
+
+Although the data seems tidy at first, the first thing to do is to set correct values to the columns 
+the other thing we can do is to group by regions and analyze their consumption rates.
+
+```{r}
+
+NE_edata <- dplyr::filter(energydata, state %in% c("Maine", "Vermont", "New Hampshire", "Massachusetts", "Connecticut", "Rhode Island", "New York", "Pennsylvania", "New Jersey", "Delaware", "District Of Columbia", "Maryland","West Virginia", "Virginia", "North Carolina", "South Carolina", "Georgia", "Florida"))
+
+MW_edata <- dplyr::filter(energydata, state %in% c("South Dakota", "North Dakota","Nebraska", "Kansas", "Oklahoma", "Minnesota", "Iowa", "Missouri", "Wisconsin", "Illinois", "Indiana", "Michigan", "Ohio", "Kentucky", "Tennessee"))
+
+SO_edata <- dplyr::filter(energydata, state %in% c("New Mexico", "Texas", "Arkansas", "Louisiana", "Alabama", "Mississippi"))
+          
+MO_edata  <- dplyr::filter(energydata, state %in% c("Montana", "Idaho", "Wyoming", "Utah", "Colorado"))
+
+NW_edata  <- dplyr::filter(energydata, state %in% c("Washington", "Oregon", "Nevada", "Arizona", "California"))
+
+NE_edata_new <- factorsNumeric(NE_edata[2:ncol(NE_edata)])
+NE_edata_new$state <- NE_edata$state
+
+MW_edata_new <- factorsNumeric(MW_edata[2:ncol(MW_edata)])
+MW_edata_new$state <- MW_edata$state
+
+SO_edata_new <- factorsNumeric(SO_edata[2:ncol(SO_edata)])
+SO_edata_new$state <- SO_edata$state
+
+MO_edata_new <- factorsNumeric(MO_edata[2:ncol(MO_edata)])
+MO_edata_new$state <- MO_edata$state
+
+NW_edata_new <- factorsNumeric(NW_edata[2:ncol(NW_edata)])
+NW_edata_new$state <- NW_edata$state
+```
+
+```{r}
+NE_total <- dplyr::summarise(NE_edata_new, suma = sum(NE_edata_new$`energy total`))
+MW_total <- dplyr::summarise(MW_edata_new, suma = sum(MW_edata_new$`energy total`))
+SO_total <- dplyr::summarise(SO_edata_new, suma = sum(SO_edata_new$`energy total`))
+MO_total <- dplyr::summarise(MO_edata_new, suma = sum(MO_edata_new$`energy total`))
+NW_total <- dplyr::summarise(NW_edata_new, suma = sum(NW_edata_new$`energy total`))
+
+totals <- c(NE_total,MW_total,SO_total,MO_total,NW_total)
+names(totals) <-c("NE","MW","SO","MO","NW")
+kable(as.data.frame(totals))
+```
+
+Not surprisingly, the Northeast consumes more energy than other regions, what's a bit shocking is that NW (that includes california) do not consume as much energy, but this is also an area with only 5 states, instead, the MidWest area has 15 states and those have some heavy industry there.
+
+## 2nd data set - NYC collision data
+
+For this data set i would like to know the borough that's more dangerous for cyclists
+
+```{r}
+collisiondata <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/city_colission_reports.csv", header=FALSE, sep=",",dec=".", na.strings=c("(s)","NA"))
+
+## remove first 3 lines
+collisiondata <- dplyr::slice(collisiondata, 4:nrow(collisiondata))
+
+#use the first column as the column name
+names(collisiondata) <- lapply(collisiondata[1, ], as.character)
+collisiondata <- collisiondata[-1,] 
+
+
+
+#convert all numeric columns 
+coldata <- factorsNumeric(collisiondata[3:14]) 
+coldata$GeoCode <-collisiondata$GeoCode
+coldata$GeoCodeLabel <-collisiondata$GeoCodeLabel
+
+coldata_boroughs <- dplyr::filter(coldata, GeoCode %in% c("M", "B","Q", "K", "S"))
+
+coldata_boroughs <- dplyr::mutate(coldata_boroughs, cyclist_kill_ratio = CyclistsKilled/Bicycle)
+coldata_boroughs <- dplyr::mutate(coldata_boroughs, cyclist_injury_ratio = CyclistsInjured/Bicycle)
+coldata_boroughs <- dplyr::mutate(coldata_boroughs, motorist_kill_ratio = MotoristsKilled/Number_of_Motor_Vehicle_Collisions)
+coldata_boroughs <- dplyr::mutate(coldata_boroughs, motorist_injury_ratio = MotoristsInjured/Number_of_Motor_Vehicle_Collisions)
+
+kable(coldata_boroughs[,14:ncol(coldata_boroughs)])
+```
+
+We can see that Brookyln is the most dangerous borough to drive a bike, the only one with casualties. the one with most injuries is the Bronx, which can make some sense because it does not have as many Bike Lanes as other boroughs (Source: http://www.nycbikemaps.com/wp-content/uploads/2016/04/bikeroutedetailscy06-cy15.pdf)
+
+Also the Bronx is the borough Download NYC borough mapwith more percentage of motorists injured in accidents.
+
+
+## 3rd data set - OATH Hearings
+
+I'm going to plot around that map the balnce due of the violations to see which zipcode (or which area within a Borough) gets the most cumulative tickets.
+
+```{r}
+#loading ny county data from cloropleth package
+ec_states <- c("new york")
+data(county.regions)
+
+hearingdata <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/OATH_Hearings_5000_rows.csv", header=TRUE, sep=",",dec=".", na.strings=c("(s)","NA"))
+hearingdata$Balance.Due <- as.numeric(gsub("\\$|,| ","",hearingdata$Balance.Due))
+hearingdata$Violation.Location..Zip.Code. <- as.numeric(gsub("\\$|,| ","",hearingdata$Violation.Location..Zip.Code.))
+
+
+res =""
+res$region <-hearingdata$Violation.Location..Zip.Code.
+res$value <-hearingdata$Balance.Due
+
+#converting result to data frame and cleaning it
+res <- as.data.frame(res)
+res <- na.omit(res) 
+res <- ddply(res,"region",numcolwise(sum))
+
+res$region <- as.character(res$region)
+nyc_county_names = c("kings", "bronx", "new york", "queens", "richmond")
+nyc_county_fips = county.regions %>% filter(state.name == "new york" & county.name %in% nyc_county_names) %>% select(region)
+
+zip_choropleth(res, 
+               state_zoom = ec_states, 
+               county_zoom = nyc_county_fips$region,
+               title      = "OATH hearings Balance due per zip code",
+               legend     = "Balance Due") + coord_map()
+
+```
+A lot of balance due tickets are in Poor areas of brookyln (Canarsie and East NEw York, Flatbush) and in inner parts of bornx, let's see if these balances are paid per zip code with a similar analysis.
+
+```{r}
+#loading ny county data from cloropleth package
+
+hearingdata$Paid.Amount <- as.numeric(gsub("\\$|,| ","",hearingdata$Paid.Amount))
+#hearingdata$Violation.Location..Zip.Code. <- as.numeric(gsub("\\$|,| ","",hearingdata$Violation.Location..Zip.Code.))
+
+
+res2 =""
+res2$region <-hearingdata$Violation.Location..Zip.Code.
+res2$value <-hearingdata$Paid.Amount
+
+#converting result to data frame and cleaning it
+res2 <- as.data.frame(res2)
+res2 <- na.omit(res2) 
+res2 <- ddply(res2,"region",numcolwise(sum))
+
+res2$region <- as.character(res2$region)
+
+zip_choropleth(res2, 
+               state_zoom = ec_states, 
+               county_zoom = nyc_county_fips$region,
+               title      = "OATH hearings Balance due per zip code",
+               legend     = "Paid Amount") + coord_map()
+
+```
+
+A lot of the owed balance remains unpaid, The poor areas we mentioned above might pay some of the amount, but what they owe to the city is way more than the amounts paid to those balances. Staten island is one of the areas that carry a bigger balance and don't pay anything to the city, surprisingly, the area with the least income is the one that pays more of the debt, while the southern part of the island have don't pay at all, and that's the area with most income (source: http://www.silive.com/news/2014/05/how_much_income_does_your_zip.html)
