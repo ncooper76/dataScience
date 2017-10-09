@@ -149,6 +149,7 @@ zip_choropleth(res,
                legend     = "Balance Due") + coord_map()
 
 ```
+
 A lot of balance due tickets are in Poor areas of brookyln (Canarsie and East NEw York, Flatbush) and in inner parts of bornx, let's see if these balances are paid per zip code with a similar analysis.
 
 ```{r}
