@@ -1,0 +1,50 @@
+---
+title: "Assignment7_607"
+author: "Alvaro Bueno"
+date: "10/13/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(RCurl)
+library(XML)
+library(jsonlite)
+
+html <- url('https://raw.githubusercontent.com/delagroove/dataScience/master/books.html')
+```
+
+
+```{r html_table}
+webpage <- readLines(html)
+htmltable <- readHTMLTable(webpage)
+htmldata <- htmlParse(webpage, encoding="UTF-8")
+result_href <- xpathSApply(htmldata, "//*/table/tr/td/a", xmlGetAttr, 'href')
+htmltable <- as.data.frame(htmltable)
+htmltable$sourceUrl <- result_href
+htmltable
+```
+
+
+```{r xml_table}
+xData <- getURL('https://raw.githubusercontent.com/delagroove/dataScience/master/books.xml')
+doc <- xmlParse(xData)
+
+xmltable <- xmlToDataFrame(
+  getNodeSet(doc, "//book")
+)
+result_href <- xpathSApply(doc, "//*/book/Source", xmlGetAttr, 'url')
+xmltable$sourceUrl <- result_href
+xmltable
+```
+
+```{r json_table}
+jData <- getURL('https://raw.githubusercontent.com/delagroove/dataScience/master/books.json')
+jsontable <- fromJSON(jData)
+
+htmltable
+xmltable
+jsontable
+
+```
+
+The tables are not exactly identical, but they can be if we rename the columns in the HTML table and 
