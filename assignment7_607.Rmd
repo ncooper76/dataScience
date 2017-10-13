@@ -2,26 +2,28 @@
 title: "Assignment7_607"
 author: "Alvaro Bueno"
 date: "10/13/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 library(RCurl)
 library(XML)
 library(jsonlite)
+library(knitr)
 
-html <- url('https://raw.githubusercontent.com/delagroove/dataScience/master/books.html')
 ```
 
 
 ```{r html_table}
+html <- url('https://raw.githubusercontent.com/delagroove/dataScience/master/books.html')
 webpage <- readLines(html)
 htmltable <- readHTMLTable(webpage)
 htmldata <- htmlParse(webpage, encoding="UTF-8")
 result_href <- xpathSApply(htmldata, "//*/table/tr/td/a", xmlGetAttr, 'href')
 htmltable <- as.data.frame(htmltable)
 htmltable$sourceUrl <- result_href
-htmltable
 ```
 
 
@@ -34,17 +36,20 @@ xmltable <- xmlToDataFrame(
 )
 result_href <- xpathSApply(doc, "//*/book/Source", xmlGetAttr, 'url')
 xmltable$sourceUrl <- result_href
-xmltable
 ```
 
 ```{r json_table}
 jData <- getURL('https://raw.githubusercontent.com/delagroove/dataScience/master/books.json')
 jsontable <- fromJSON(jData)
-
-htmltable
-xmltable
-jsontable
-
 ```
 
-The tables are not exactly identical, but they can be if we rename the columns in the HTML table and 
+The tables are not exactly identical, but they can be if we rename the columns in the HTML table.
+
+```{r rename_cols}
+names(htmltable) <- c('Name','Author', 'Description','Published Date', 'Editorial', 'Format', 'NumPages', 'Source','SourceUrl')
+
+kable(htmltable)
+kable(xmltable)
+kable(jsontable)
+
+```
