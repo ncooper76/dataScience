@@ -1,0 +1,32 @@
+<xml version="1.0" encoding="UTF-8">
+	<book>
+		<Name>One Hundred Years of Solitude</Name>
+		<Author>Gabriel García Márquez, Gregory Rabassa (Translator)</Author>
+		<Description>Probably Garcí­a Márquez finest and most famous work. One Hundred Years of Solitude tells the story of the rise and fall, birth and death of a mythical town of Macondo through the history of the Buendia family. Inventive, amusing, magnetic, sad, alive with unforgettable men and women, and with a truth and understanding that strike the soul. One Hundred Years of Solitude is a masterpiece of the art of fiction.</Description>
+		<PublishedDate>June 24th, 2003</PublishedDate>
+		<Editorial>Harper</Editorial>
+		<Format>Hardcover</Format>
+		<NumPages>457</NumPages>
+		<Source url="https://www.goodreads.com/book/show/320.One_Hundred_Years_of_Solitude?from_search=true">Goodreads</Source>
+	</book>
+	<book>
+		<Name>Last Night a DJ Saved My Life: The History of the Disc Jockey</Name>
+		<Author>Bill Brewster, Frank Broughton</Author>
+		<Description>From the first time a record was played over the airwaves in 1906, to a modern club economy that totals $3 billion annually in New York City alone, the DJ has been at the center of popular music. Starting as little more than a talking jukebox, the DJ is now a premier entertainer, producer, businessman, and musician in his own right. Superstar DJs, from Junior Vasquez to Sasha and Digweed, command worship and adoration from millions, flying around the globe to earn tens of thousands of dollars for one night's work. Increasingly, they are replacing live musicians as the central figures of the music industry. In Last Night a DJ Saved My Life, music journalists Bill Brewster and Frank Broughton have written the first comprehensive history of the mysterious and charismatic figure behind the turntables -- part obsessive record collector, part mad scientist, part intuitive psychologist of the party groove. From England's rabid Northern Soul scene to the birth of disco in New York, from the sound systems of Jamaica to the scratch wars of early hip-hop in the Bronx, from Chicago house to Detroit techno to London rave, DJs are responsible for most of the significant changes in music over the past forty years. Drawing on in-depth interviews with DJs, critics, musicians, record executives, and the revelers at some of the century's most legendary parties, Last Night a DJ Saved My Life is nothing less than the life story of dance music.</Description>
+		<PublishedDate>July 1st, 2000</PublishedDate>
+		<Editorial>Grove Press</Editorial>
+		<Format>Paperback</Format>
+		<NumPages>336</NumPages>
+		<Source url="https://www.goodreads.com/book/show/18756.Last_Night_a_DJ_Saved_My_Life?from_search=true">Goodreads</Source>
+	</book>
+	<book>
+		<Name>Crime and Punishment"</Name>
+		<Author>Fyodor Dostoyevsky, David McDuff (Translator)</Author>
+		<Description>Through the story of the brilliant but conflicted young Raskolnikov and the murder he commits, Fyodor Dostoevsky explores the theme of redemption through suffering. Crime and Punishment put Dostoevsky at the forefront of Russian writers when it appeared in 1866 and is now one of the most famous and influential novels in world literature.</Description>
+		<PublishedDate>December 31st, 2002</PublishedDate>
+		<Editorial>Penguin</Editorial>
+		<Format>Paperback</Format>
+		<NumPages>671</NumPages>
+		<Source url="https://www.goodreads.com/book/show/7144.Crime_and_Punishment">Goodreads</Source>
+	</book>
+</xml>
