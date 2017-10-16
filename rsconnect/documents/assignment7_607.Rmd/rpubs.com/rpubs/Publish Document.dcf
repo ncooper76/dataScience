@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/318034/ee035f3c4bc8447ab235a32047f9e5e5
+bundleId: https://api.rpubs.com/api/v1/document/318034/ee035f3c4bc8447ab235a32047f9e5e5
+url: http://rpubs.com/alvarobueno/318034
+when: 1507904595.87356
