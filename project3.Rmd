@@ -17,23 +17,34 @@ library(stringr)
 
 jobOffers <- data.frame(job_title=character(), company=character(), location=character(), description=character(), age=character())
 
-# The url parameter of interest is the "b" at the end
-# it is used for pagination. Just plut in ther 30*(0:87) to get
-# the urls of your 88 pages
+
+# the urls of your 88 pages, links for ny, sf and boston from glassdoor
+
+
+
 base_url <- "https://www.glassdoor.com"
-main_url <- "/Job/jobs.htm?suggestCount=0&suggestChosen=true&clickSource=searchBtn&typedKeyword=data+sc&sc.keyword=data+scientist&locT=C&locId=1154532&jobType="
+main_url_boston <- "/Job/jobs.htm?suggestCount=0&suggestChosen=true&clickSource=searchBtn&typedKeyword=data+sc&sc.keyword=data+scientist&locT=C&locId=1154532&jobType="
+main_url_ny <- "/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=data+scientist&sc.keyword=data+scientist&locT=C&locId=1132348&jobType="
+main_url <- "/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=data+scientist&sc.keyword=data+scientist&locT=C&locId=1147401&jobType="
+
 links <- read_html(paste(base_url,main_url, sep="")) %>% html_nodes(xpath='//a[contains(@class, "jobLink")]')  %>% xml_attr("href")
 next_link <-  read_html(paste(base_url,main_url, sep="")) %>% html_nodes(xpath='//li[contains(@class, "next")]//a')  %>% xml_attr("href")
+count <- 0
 
-while(length(next_link) > 0) {
+# get links from 20 pages only
+
+while(count < 20) {
   newLinks <- read_html(paste(base_url,next_link, sep="")) %>% html_nodes(xpath='//a[contains(@class, "jobLink")]')  %>% xml_attr("href")
   links <- c(links, newLinks)
   next_link <-  read_html(paste(base_url,next_link, sep="")) %>% html_nodes(xpath='//li[contains(@class, "next")]//a')  %>% xml_attr("href")
+  count <- count + 1
 }
 ```
 
+
 ```{r}
-for(the_link in links[550:1550]){
+# process only the first 400 links
+for(the_link in links[1:400]){
   tryCatch({
   jobOffer <- NULL
 
@@ -47,8 +58,9 @@ for(the_link in links[550:1550]){
   jobOffer$age <- the_html %>% html_nodes(xpath='//div[contains(@class, "cell alignRt showDesk")]//span[contains(@class, "minor nowrap")]') %>% html_text()
 
   jobOffers <- rbind(jobOffers, data.frame(job_title=jobOffer$job_title, company=jobOffer$company, location=jobOffer$location, description=jobOffer$description, age=jobOffer$age))
+  print("job added.")
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
 
-write.csv(jobOffers, file = "jobOffers_final.csv")
+write.csv(jobOffers, file = "jobOffers_SF.csv")
 ``` 
