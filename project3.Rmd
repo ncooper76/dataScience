@@ -26,7 +26,7 @@ base_url <- "https://www.glassdoor.com"
 main_url_boston <- "/Job/jobs.htm?suggestCount=0&suggestChosen=true&clickSource=searchBtn&typedKeyword=data+sc&sc.keyword=data+scientist&locT=C&locId=1154532&jobType="
 main_url_ny <- "/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=data+scientist&sc.keyword=data+scientist&locT=C&locId=1132348&jobType="
 main_url_sf <- "/Job/jobs.htm?suggestCount=0&suggestChosen=false&clickSource=searchBtn&typedKeyword=data+scientist&sc.keyword=data+scientist&locT=C&locId=1147401&jobType="
-main_url <- "Job/jobs.htm?suggestCount=0&suggestChosen=true&clickSource=searchBtn&typedKeyword=data+sci&sc.keyword=data+scientist&locT=C&locId=1128808&jobType="
+main_url <- "/Job/jobs.htm?suggestCount=0&suggestChosen=true&clickSource=searchBtn&typedKeyword=data+sci&sc.keyword=data+scientist&locT=C&locId=1128808&jobType="
 
 links <- read_html(paste(base_url,main_url, sep="")) %>% html_nodes(xpath='//a[contains(@class, "jobLink")]')  %>% xml_attr("href")
 next_link <-  read_html(paste(base_url,main_url, sep="")) %>% html_nodes(xpath='//li[contains(@class, "next")]//a')  %>% xml_attr("href")
@@ -63,5 +63,5 @@ for(the_link in links[1:400]){
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
 
-write.csv(jobOffers, file = "jobOffers_SF.csv")
+write.csv(jobOffers, file = "jobOffers_CHI.csv")
 ``` 
