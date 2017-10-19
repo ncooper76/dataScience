@@ -47,24 +47,24 @@ for (i in 1:length(salarytidy$salary)){
 
 ####Importing the data from Glassdoor for Boston
 ```{r importingdataMA, eval=TRUE}
-joblistma <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/jobOffers_final_with_dupes_reduced.csv", stringsAsFactors = FALSE, fileEncoding = "latin1")
+joblistma <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/jobOffers_final_with_dupes_reduced.csv", stringsAsFactors = FALSE)
 ```
 
 ####Importing data from Glassdoor for NYC
 ```{r importingdataNY, eval=TRUE}
-joblistny <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/jobOffers_ny.csv", stringsAsFactors=FALSE, fileEncoding = "latin1")
+joblistny <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/jobOffers_ny.csv", stringsAsFactors=FALSE)
 ```
 
 
 ####Importing data from Glassdoor for SF
 ```{r importingdataSF, eval=TRUE}
-joblistsf <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/jobOffers_SF.csv", stringsAsFactors=FALSE, fileEncoding = "latin1")
+joblistsf <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/jobOffers_SF.csv", stringsAsFactors=FALSE)
 joblistsf <- joblistsf[,-1]
 ```
 
 ####Importing data from Glassdoor for CHI
 ```{r importingdataSF, eval=TRUE}
-joblistchi <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/jobOffers_CHI.csv", stringsAsFactors=FALSE, fileEncoding = "latin1")
+joblistchi <- read.csv("https://raw.githubusercontent.com/delagroove/dataScience/master/jobOffers_CHI.csv", stringsAsFactors=FALSE)
 joblistchi <- joblistchi[,-1]
 ```
 
@@ -101,6 +101,16 @@ compskills <- joblisttidy %>%
   mutate(scala = grepl("scala", description, ignore.case=TRUE)) %>%
   select(job_title, company, python, perl, Cplusplus, SQL, java, javascript, R, hadoop, spark, scala)
 summary(compskills)
+barplot(table(compskills$python),main = "Python")
+barplot(table(compskills$perl),main = "Perl")
+barplot(table(compskills$Cplusplus),main = "C++")
+barplot(table(compskills$SQL),main = "SQL")
+barplot(table(compskills$java),main = "Java")
+barplot(table(compskills$javascript),main = "JavaScript")
+barplot(table(compskills$R),main = "R")
+barplot(table(compskills$hadoop),main = "Hadoop")
+barplot(table(compskills$spark),main = "Spark")
+barplot(table(compskills$scala),main = "Scala")
 ```
 
 ####Identifying analytical skills
@@ -112,7 +122,12 @@ skills <- joblisttidy %>%
   mutate(plateau = grepl("plateau", description, ignore.case=TRUE)) %>%
   mutate(d3 = grepl("D3", description)) %>%
   select(job_title, company, machinelearning, statisticalmodeling, techwriting, plateau, d3)
-summary(skills)  
+summary(skills)
+barplot(table(skills$machinelearning),main = "Machine Learning")
+barplot(table(skills$statisticalmodeling),main = "Statistical Modeling")
+barplot(table(skills$techwriting),main = "Technical Writing")
+barplot(table(skills$plateau),main = "Plateau")
+barplot(table(skills$d3),main = "D3")
 ```
 
 ####Identifying soft skills
@@ -126,5 +141,12 @@ softskills <- joblisttidy %>%
   mutate(creative = grepl("creativ", description, ignore.case=TRUE)) %>%
   mutate(visualization = grepl("visualization", description, ignore.case=TRUE)) %>%
   select(job_title, company, collaborative, organized, selfstarter, attndetail, communication, creative, visualization)
-summary(softskills)  
+summary(softskills)
+barplot(table(softskills$collaborative),main = "Collaborative")
+barplot(table(softskills$organized),main = "Organized")
+barplot(table(softskills$selfstarter),main = "Self Starter")
+barplot(table(softskills$attndetail),main = "Attention to Detail")
+barplot(table(softskills$communication),main = "Communication")
+barplot(table(softskills$creative),main = "Creative")
+barplot(table(softskills$visualization),main = "Visualization")
 ```
